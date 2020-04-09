@@ -6,6 +6,7 @@ const request = require('./util/request')
 const packageJSON = require('./package.json')
 const exec = require('child_process').exec
 const cache = require('apicache').middleware
+const request_proto = require('request')
 
 // version check
 exec('npm info NeteaseCloudMusicApi version', (err, stdout, stderr) => {
@@ -81,6 +82,15 @@ fs.readdirSync(path.join(__dirname, 'module')).reverse().forEach(file => {
       })
   })
 })
+app.use('/getimg', (req, res) => {
+  console.log(req.query)
+  let url = req.query.url || 'http://image.wufazhuce.com/FrryB8L4qG2oprl7Q41UswGXabEt'
+  let filename = `one.png`;
+  request_proto(url).pipe(fs.createWriteStream('./public/images/' + filename));
+  res.send({url: '/public/images/' + filename})
+})
+app.use('/public', express.static('public'))
+
 const port = process.env.PORT || 3000
 const host = process.env.HOST || ''
 
