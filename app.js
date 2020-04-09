@@ -85,7 +85,7 @@ fs.readdirSync(path.join(__dirname, 'module')).reverse().forEach(file => {
 app.use('/getimg', (req, res) => {
   console.log(req.query)
   let url = req.query.url || 'http://image.wufazhuce.com/FrryB8L4qG2oprl7Q41UswGXabEt'
-  let filename = `one.png`;
+  let filename =  url.split('/').pop()　　// 已原网络图片的名称命名本地图片
   request_proto(url).pipe(fs.createWriteStream('./public/images/' + filename));
   res.send({url: '/public/images/' + filename})
 })
