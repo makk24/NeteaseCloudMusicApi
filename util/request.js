@@ -112,7 +112,7 @@ const createRequest = (method, url, data, options) => {
     } else {
       settings.proxy = options.proxy
     }
-
+    console.log(settings)
     request(
       settings,
       (err, res, body) => {
