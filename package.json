@@ -29,8 +29,10 @@
   "dependencies": {
     "apicache": "^1.5.2",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "pac-proxy-agent": "^3.0.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "sqlite3": "^4.1.1"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
