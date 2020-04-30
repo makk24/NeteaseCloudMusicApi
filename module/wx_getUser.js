@@ -4,9 +4,9 @@ var SqliteDB = require('../util/sqliteUtils.js').SqliteDB;
 
 // var createTileTableSql = "create table if not exists tiles(level INTEGER, column INTEGER, row INTEGER, content BLOB);";
 
-// var createLabelTableSql = "create table if not exists labels(level INTEGER, longitude REAL, latitude REAL, content BLOB);";
+// var createLabelTableSql = "alter table userInfo add [appid] VARCHAR NOT NULL DEFAULT('wxe2e247dd3a071632');";
 
-// sqliteDB.createTable(createTileTableSql);
+// // sqliteDB.createTable(createTileTableSql);
 
 // sqliteDB.createTable(createLabelTableSql);
 
@@ -67,8 +67,8 @@ module.exports = (query, request) => {
           let querySql = `select * from userInfo where openId='${answer.body.openid}'`;
           sqliteDB.queryData(querySql, (objects) => {
             if (objects.length == 0) {
-              var tileData = [[answer.body.openid, answer.body.session_key, '']];
-              var insertTileSql = 'insert into userInfo(openId, sessionKey, nickName) values(?, ?, ?)';
+              var tileData = [[answer.body.openid, answer.body.session_key, '', query.appid]];
+              var insertTileSql = 'insert into userInfo(openId, sessionKey, nickName,appid) values(?, ?, ?, ?)';
               sqliteDB.insertData(insertTileSql, tileData);
               sqliteDB.close();
             }else{
