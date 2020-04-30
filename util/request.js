@@ -37,6 +37,8 @@ const createRequest = (method, url, data, options) => {
     let headers = { 'User-Agent': chooseUserAgent(options.ua) }
     if (method.toUpperCase() === 'POST')
       headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    if (method.toUpperCase() === 'POST' && options.crypto == 'wxapi')
+      headers['Content-Type'] = 'application/json'
     if (url.includes('music.163.com'))
       headers['Referer'] = 'https://music.163.com'
     // headers['X-Real-IP'] = '118.88.88.88'
@@ -102,7 +104,7 @@ const createRequest = (method, url, data, options) => {
       method: method,
       url: url,
       headers: headers,
-      body: queryString.stringify(data)
+      body: method.toUpperCase() === 'POST' && options.crypto == 'wxapi' ? JSON.stringify(data) : queryString.stringify(data)
     }
 
     if (options.crypto === 'eapi') settings.encoding = null

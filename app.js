@@ -7,6 +7,7 @@ const packageJSON = require('./package.json')
 const exec = require('child_process').exec
 const cache = require('apicache').middleware
 const request_proto = require('request')
+require('./util/schedule')
 
 // version check
 exec('npm info NeteaseCloudMusicApi version', (err, stdout, stderr) => {
