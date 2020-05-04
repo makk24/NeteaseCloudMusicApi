@@ -51,7 +51,7 @@ const scheduleCronstyle = () => {
 每周1的1点1分30秒触发 ：'30 1 1 * * 1'
    */
 
-  schedule.scheduleJob('30 00 22 * * *', () => {
+  schedule.scheduleJob('30 00 9 * * *', () => {
     pushMsg()
   });
 }
