@@ -55,6 +55,7 @@ const scheduleCronstyle = () => {
     pushMsg()
   });
 }
+pushMsg();
 /**
  * 消息推送
  */
@@ -65,7 +66,7 @@ function pushMsg() {
     let querySql = `select * from userInfo where appid='${appid}'`;
     sqliteDB.queryData(querySql, (objects) => {
       if (objects.length > 0) {
-        getToken({ appid: appid, appSecret: apps[appid].appSecret }).then(res => {
+        getToken({ appid: appid, appSecret: apps[appid].appSecret }).then( async res => {
           console.log('token', res)
           if (res.status == 200) {
             let token = res.body.access_token;
@@ -74,8 +75,13 @@ function pushMsg() {
               if (element.openId) {
                 pushData.template_id = apps[appid].template_id;
                 pushData.page = apps[appid].page
-                pushData.thing1 = apps[appid].thing1 || '';
+                pushData.data.thing1['value'] = apps[appid].thing1 || '';
                 pushData.touser = element.openId;
+                if(appid == 'wxe2e247dd3a071632'){
+                  let res_one = await getOneData({day: getdate(2)})
+                  console.log(res_one)
+                  pushData.data.thing8['value'] = res_one.body.data[0].hp_content ? (res_one.body.data[0].hp_content.substring(0, 17) + '...') : pushData.thing8;
+                }
                 pushWx({ token: token, pushData: pushData }).then(result => {
                   console.log('push', result)
                 })
@@ -87,6 +93,12 @@ function pushMsg() {
     });
     sqliteDB.close();
   })
+}
+function getOneData(query){
+  return request(
+    'GET', `http://v3.wufazhuce.com:8000/api/hp/bymonth/${query.day}`, {},
+    {crypto: 'oneapi', cookie: query.cookie, proxy: query.proxy}
+  )
 }
 
 function getToken(query) {
@@ -102,7 +114,7 @@ function pushWx(query) {
     { crypto: 'wxapi', cookie: query.cookie, proxy: query.proxy }
   )
 }
-function getdate() {
+function getdate(type = 1) {
   var now = new Date();
 
   var year = now.getFullYear();       //年
@@ -112,7 +124,7 @@ function getdate() {
   var hh = now.getHours();            //时
   var mm = now.getMinutes();          //分
   var ss = now.getSeconds();          //分
-  return `${year}年${month}月${day}日`;
+  return type == 1 ? `${year}年${month}月${day}日` : `${year}-${month}-${day}`;
 }
 
 scheduleCronstyle();
