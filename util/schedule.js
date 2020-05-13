@@ -55,7 +55,6 @@ const scheduleCronstyle = () => {
     pushMsg()
   });
 }
-pushMsg();
 /**
  * 消息推送
  */
