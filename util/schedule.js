@@ -58,7 +58,6 @@ const scheduleCronstyle = () => {
     logger.info('run date====>' + new Date().toLocaleString())
   });
 }
-pushMsg();
 /**
  * 消息推送
  */
