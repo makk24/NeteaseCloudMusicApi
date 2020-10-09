@@ -1,6 +1,8 @@
 const schedule = require('node-schedule');
 const request = require('./request');
 const SqliteDB = require('./sqliteUtils.js').SqliteDB;
+var log4js  = require('./log');
+const logger = log4js.getLogger();
 
 const appids = [
   'wxe2e247dd3a071632',
@@ -53,6 +55,7 @@ const scheduleCronstyle = () => {
 
   schedule.scheduleJob('30 00 9 * * *', () => {
     pushMsg()
+    logger.info('run date====>' + new Date().toLocaleString())
   });
 }
 pushMsg();
@@ -60,6 +63,7 @@ pushMsg();
  * 消息推送
  */
 function pushMsg() {
+  logger.info('running date====>' + new Date().toLocaleString())
   var sqliteDB = new SqliteDB();
   appids.forEach(item => {
     let appid = item;

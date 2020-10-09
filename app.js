@@ -7,6 +7,9 @@ const packageJSON = require('./package.json')
 const exec = require('child_process').exec
 const cache = require('apicache').middleware
 const request_proto = require('request')
+
+// 这个是我们上面自定义的模块
+var log4js = require('./util/log');
 require('./util/schedule')
 
 // version check
@@ -20,7 +23,7 @@ exec('npm info NeteaseCloudMusicApi version', (err, stdout, stderr) => {
 })
 
 const app = express()
-
+log4js.useLogger(app)
 // CORS & Preflight request
 app.use((req, res, next) => {
   if(req.path !== '/' && !req.path.includes('.')){
