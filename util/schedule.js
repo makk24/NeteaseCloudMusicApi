@@ -13,6 +13,7 @@ const apps = {
   'wxe2e247dd3a071632': { template_id: 'd6JdFiWEpk5Vdzd8nQEPFN2C623GAXS3mkq3OepBOYM', appSecret: '6a7902de8b0937d57648ab9dca2ff281', page: 'pages/detail/index' }, //one
   'wx6f8db60e5cc9d60b': { template_id: 'crTiw-b8jHvszBiDgfk98dolackN-RvaZcYyWR8BK00', appSecret: '956254709fe32880519ee405b0702ab2', page: 'lib/hardcore/pages/subject/subject-list1' }, //查影视
   'wx34e13c37e0ae2675': { template_id: 'dyHKUlEDOsCDzSQjQ_4fc3VfVcS0DpsqwPe64sI2llk', appSecret: '6f0c30645c1039eb87a75950302ae73c', page: 'pages/index/index', thing1: '来放松一下，听首歌吧~', }, //查音乐
+  'wxc75a272b3dc133ca': { template_id: 'FgQPeX7GvukQs4wF3H09tur7TAP_V9D1dqUF-aRV2Oc', appSecret: 'ded5c6768716e440a5287b3386c85889', page: 'pages/home/home', thing8: '小决心提醒你该行动了', }, //英语学习
 }
 
 let pushData = {
@@ -24,6 +25,9 @@ let pushData = {
   'data': {
     'thing8': {
       'value': '每日一美句，快来看看吧~'
+    },
+    'thing9': {
+      'value': '养成每天学习单词好习惯'
     },
     'thing10': {
       'value': '小决心提醒你该行动了'
@@ -53,24 +57,27 @@ const scheduleCronstyle = () => {
 每周1的1点1分30秒触发 ：'30 1 1 * * 1'
    */
 
-  schedule.scheduleJob('30 00 9 * * *', () => {
+  schedule.scheduleJob('0 30 9 * * *', () => {
     pushMsg()
-    logger.info('run date====>' + new Date().toLocaleString())
+    logger.info('run date====>', new Date().toLocaleString())
   });
 }
 /**
  * 消息推送
  */
 function pushMsg() {
-  logger.info('running date====>' + new Date().toLocaleString())
+  logger.info('running date====>', new Date().toLocaleString())
   var sqliteDB = new SqliteDB();
   appids.forEach(item => {
     let appid = item;
     let querySql = `select * from userInfo where appid='${appid}'`;
     sqliteDB.queryData(querySql, (objects) => {
       if (objects.length > 0) {
+        logger.info('gettoken-data====>', { appid: appid, appSecret: apps[appid].appSecret })
         getToken({ appid: appid, appSecret: apps[appid].appSecret }).then( async res => {
-          console.log('token', res)
+          console.log('gettoken', res)
+          logger.info('gettoken-data====>', { appid: appid, appSecret: apps[appid].appSecret })
+          logger.info('gettoken====>', res)
           if (res.status == 200) {
             let token = res.body.access_token;
             for (let index = 0; index < objects.length; index++) {
@@ -79,23 +86,36 @@ function pushMsg() {
                 pushData.template_id = apps[appid].template_id;
                 pushData.page = apps[appid].page
                 pushData.data.thing1['value'] = apps[appid].thing1 || '';
+                pushData.data.date2['value'] = getdate();
                 pushData.touser = element.openId;
                 if(appid == 'wxe2e247dd3a071632'){
                   let res_one = await getOneData({day: getdate(2)})
                   console.log(res_one)
                   pushData.data.thing8['value'] = res_one.body.data[0].hp_content ? (res_one.body.data[0].hp_content.substring(0, 17) + '...') : pushData.thing8;
                 }
+                if(appid == 'wxc75a272b3dc133ca'){
+                  pushData.data.thing8['value'] = apps[appid].thing8;
+                }
+                logger.info('push-data===>', pushData)
                 pushWx({ token: token, pushData: pushData }).then(result => {
                   console.log('push', result)
+                  logger.info('push-data===>', pushData)
+                  logger.info('push-res===>', result)
+                }).catch(res => {
+                  logger.info('push-data===>', pushData)
+                  logger.info('push-res-catch===>', res)
                 })
               }
             }
           }
+        }).catch(res => {
+          logger.info('gettoken-data====>', { appid: appid, appSecret: apps[appid].appSecret })
+          logger.info('gettoken-catch====>', res)
         })
       }
     });
-    sqliteDB.close();
   })
+  sqliteDB.close();
 }
 function getOneData(query){
   return request(
