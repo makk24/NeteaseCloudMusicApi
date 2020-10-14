@@ -54,7 +54,8 @@ var SqliteDB = require('../util/sqliteUtils.js').SqliteDB;
 var apps = {
   'wxe2e247dd3a071632': '6a7902de8b0937d57648ab9dca2ff281', //one
   'wx6f8db60e5cc9d60b': '956254709fe32880519ee405b0702ab2', //查影视
-  'wx34e13c37e0ae2675': '6f0c30645c1039eb87a75950302ae73c' //查音乐
+  'wx34e13c37e0ae2675': '6f0c30645c1039eb87a75950302ae73c', //查音乐
+  'wxc75a272b3dc133ca': 'ded5c6768716e440a5287b3386c85889', //英语单词
 }
 
 module.exports = (query, request) => {
